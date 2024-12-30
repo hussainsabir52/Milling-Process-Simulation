@@ -167,6 +167,9 @@ VM/
 #Data file
 filtered_displacements/
 raw_sensors/
-data_decimated/
+data/
 clustersim_lhs.xlsx
 .DS_Store
+*.txt
+*.model
+*.png
