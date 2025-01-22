@@ -4,7 +4,11 @@ from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as py
 import pandas as pd
 
-clustersim_lhs = pd.read_excel('clustersim_lhs.xlsx', sheet_name='Zuordnung_Messdaten')
+clustersim_lhs = pd.read_excel('../clustersim_lhs.xlsx', sheet_name='Zuordnung_Messdaten')
+
+
+source_folder = "../data/scaled_data_max_abs"
+target_folder = "../data/data_split"
 
 clustersim_lhs_train, clustersim_lhs_test= train_test_split(clustersim_lhs.index, test_size=0.3, train_size=0.7)
 
@@ -13,7 +17,7 @@ y_train=[]
 i=0
 for index in clustersim_lhs_train:
     try:
-        data=np.loadtxt(f"data_trimmed/{clustersim_lhs.iloc[index]['Messdatei']}.txt")
+        data=np.loadtxt(f"{source_folder}/{clustersim_lhs.iloc[index]['Messdatei']}.txt")
         n=np.full(
             shape=data.shape[0],
             fill_value=clustersim_lhs.iloc[index]['n'],
@@ -59,8 +63,8 @@ for index in clustersim_lhs_train:
     except FileNotFoundError:
         pass
 
-np.savetxt("X_train.txt", X_train, delimiter=" ")
-np.savetxt("y_train.txt", y_train, delimiter=" ")
+np.savetxt(f"{target_folder}/X_train.txt", X_train, delimiter=" ")
+np.savetxt(f"{target_folder}/y_train.txt", y_train, delimiter=" ")
 
 
 
@@ -70,7 +74,7 @@ y_test=[]
 i=0
 for index in clustersim_lhs_test:
     try:
-        data=np.loadtxt(f"data_trimmed/{clustersim_lhs.iloc[index]['Messdatei']}.txt")
+        data=np.loadtxt(f"{source_folder}/{clustersim_lhs.iloc[index]['Messdatei']}.txt")
         n=np.full(
             shape=data.shape[0],
             fill_value=clustersim_lhs.iloc[index]['n'],
@@ -117,5 +121,5 @@ for index in clustersim_lhs_test:
         pass
 
 
-np.savetxt("X_test.txt", X_test, delimiter=" ")
-np.savetxt("y_test.txt", y_test, delimiter=" ")
+np.savetxt(f"{target_folder}/X_test.txt", X_test, delimiter=" ")
+np.savetxt(f"{target_folder}/y_test.txt", y_test, delimiter=" ")
