@@ -1,32 +1,43 @@
 import numpy as np
 import tensorflow as tf
-from tensorflow.python.keras.models import Sequential
-from tensorflow.python.keras.layers import Dense, Flatten, Conv1D, MaxPooling1D
-from tensorflow.python.keras.callbacks import EarlyStopping
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Flatten, Conv2D, MaxPooling2D
+from tensorflow.keras.callbacks import EarlyStopping
+from tensorflow.keras.optimizers import Adam
 
 
 n_steps = 20
 n_features = 11
 
 X_train = np.load("./data/cnn_data/X_train_windows.npy")
-y_train_dx = np.load("./data/cnn_data/y_train_windows_dx.npy")
+y_train = np.load("./data/cnn_data/y_train_windows.npy")
 X_test = np.load("./data/cnn_data/X_test_windows.npy")
-y_test_dx = np.load("./data/cnn_data/y_test_windows_dx.npy")
+y_test = np.load("./data/cnn_data/y_test_windows.npy")
 
-early_stopping = EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)
+early_stopping = EarlyStopping(monitor='loss', patience=5, restore_best_weights=True)
 
 model = Sequential()
-model.add(Conv1D(filters=128, kernel_size=2, activation='relu', input_shape=(n_steps, n_features)))
-model.add(MaxPooling1D(pool_size=2))
-model.add(Flatten())
-model.add(Dense(50, activation='relu'))
-model.add(Dense(1))
-model.compile(optimizer='adam', loss='mse')
+model.add(Conv2D(filters=32, kernel_size=3, activation='relu', padding='same', input_shape=(n_steps, n_features, 1)))
+model.add(MaxPooling2D(pool_size=2))
 
-model.fit(X_train, y_train_dx, batch_size=64, epochs=25, callbacks=[early_stopping])
+model.add(Conv2D(64, 3, activation='relu', padding='same'))
+model.add(MaxPooling2D(pool_size=2))
+
+model.add(Conv2D(128, 3, activation='relu', padding='same'))
+model.add(MaxPooling2D(pool_size=2))
+
+model.add(Flatten())
+model.add(Dense(64, activation='relu'))
+model.add(Dense(2))
+
+
+optimizer = Adam(learning_rate=0.0001)
+model.compile(optimizer=optimizer, loss='mse')
+
+model.fit(X_train, y_train, batch_size=64, epochs=10, callbacks=[early_stopping])
+
+y_pred = model.predict(X_test)
+
+np.save("./data/cnn_data/y_pred_model1.npy", y_pred)
 
 model.save("model1_cnn_base.keras")
-
-y_pred_dx = model.predict(X_test)
-
-np.save("./data/cnn_data/y_pred_model1_dx.npy", y_pred_dx)
