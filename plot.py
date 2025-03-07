@@ -3,8 +3,9 @@ import matplotlib.pyplot as plt
 
 
 data1=np.load('./data/cnn_data/y_test_windows.npy')
-data2=np.load('./data/cnn_data/y_pred_model1.npy')
+# data2=np.load('./data/cnn_data/y_pred_model1.npy')
 
+data2 = np.load('./data/cnn_data/y_pred_pytorch_cnn.npy')
 
 # Plot the first columns of both data sets
 plt.figure(figsize=(10, 5))
