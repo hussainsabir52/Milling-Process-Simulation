@@ -173,3 +173,4 @@ clustersim_lhs.xlsx
 *.txt
 *.model
 *.png
+*.npy
